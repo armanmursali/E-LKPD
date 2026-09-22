@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::inertia('/', 'Welcome')->name('home');
+Route::inertia('/test', 'test/Index')->name('test');
 Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('auth.google');
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
 Route::get('/kelas-publik/{token}', [PublicKelasController::class, 'show'])->name('kelas.public');
