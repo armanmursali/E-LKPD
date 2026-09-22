@@ -40,9 +40,10 @@ const menuItems = [
             v-for="menu in menuItems"
             :key="menu.key"
             :href="publicToken ? `/kelas-publik/${publicToken}/${menu.key}` : `/kelas/${kelasId}/${menu.key}`"
-            class="group flex min-h-28 flex-col items-center justify-center gap-3 rounded-lg border border-amber-200 bg-amber-50/60 p-3 text-center shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-amber-500 hover:bg-amber-100 hover:shadow-md sm:min-h-32 sm:p-4 dark:border-amber-900/70 dark:bg-secondary dark:hover:border-amber-600 dark:hover:bg-accent"
+            class="group flex min-h-28 flex-col items-center justify-center gap-3 rounded-lg border border-amber-200 bg-amber-50/60 p-3 text-center shadow-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:border-amber-500 hover:bg-amber-100 hover:shadow-md active:translate-y-0.5 active:scale-[0.97] active:shadow-inner sm:min-h-32 sm:p-4 dark:border-amber-900/70 dark:bg-secondary dark:hover:border-amber-600 dark:hover:bg-accent"
+            :class="publicToken ? 'touch-manipulation' : ''"
         >
-            <span class="flex size-12 items-center justify-center rounded-full bg-amber-800 text-amber-100 transition group-hover:bg-amber-700">
+            <span class="flex size-12 items-center justify-center rounded-full bg-amber-800 text-amber-100 transition duration-200 group-hover:bg-amber-700 group-active:scale-90 group-active:rotate-[-6deg]">
                 <component :is="menu.icon" class="size-6" />
             </span>
             <span class="text-sm font-semibold leading-snug text-amber-950 dark:text-amber-50">{{ menu.label }}</span>

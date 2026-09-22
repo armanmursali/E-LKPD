@@ -75,15 +75,12 @@ export function initializeTheme(): void {
         return;
     }
 
-    // Initialize theme from saved preference or default to system...
-    const savedAppearance = getStoredAppearance();
-    updateTheme(savedAppearance || 'system');
-
-    // Set up system theme change listener...
-    mediaQuery()?.addEventListener('change', handleSystemThemeChange);
+    // The application uses light mode as its only supported appearance.
+    localStorage.setItem('appearance', 'light');
+    updateTheme('light');
 }
 
-const appearance = ref<Appearance>('system');
+const appearance = ref<Appearance>('light');
 
 export function useAppearance(): UseAppearanceReturn {
     onMounted(() => {
@@ -91,9 +88,7 @@ export function useAppearance(): UseAppearanceReturn {
             'appearance',
         ) as Appearance | null;
 
-        if (savedAppearance) {
-            appearance.value = savedAppearance;
-        }
+        appearance.value = 'light';
     });
 
     const resolvedAppearance = computed<ResolvedAppearance>(() => {
@@ -105,15 +100,15 @@ export function useAppearance(): UseAppearanceReturn {
     });
 
     function updateAppearance(value: Appearance) {
-        appearance.value = value;
+        appearance.value = 'light';
 
         // Store in localStorage for client-side persistence...
-        localStorage.setItem('appearance', value);
+        localStorage.setItem('appearance', 'light');
 
         // Store in cookie for SSR...
-        setCookie('appearance', value);
+        setCookie('appearance', 'light');
 
-        updateTheme(value);
+        updateTheme('light');
     }
 
     return {
