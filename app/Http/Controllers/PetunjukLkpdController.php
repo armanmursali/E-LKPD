@@ -57,12 +57,12 @@ class PetunjukLkpdController extends Controller
             ['kelas_id' => $kelas->id],
             [
                 'items' => [
-                    ['nomor' => 1, 'icon' => 'id-card', 'teks' => 'Isilah identitas diri/identitas kelompok pada halaman depan LKPD yang tersedia.'],
-                    ['nomor' => 2, 'icon' => 'book-open', 'teks' => 'Bacalah dan fahami deskripsi LKPD yang terdapat pada halaman sebelumnya.'],
-                    ['nomor' => 3, 'icon' => 'target', 'teks' => 'Silahkan memahami capaian pembelajaran, alur tujuan pembelajaran, tujuan pembelajaran dan indikator ketercapaian tujuan pembelajaran yang merupakan output dari kegiatan pembelajaran ini.'],
-                    ['nomor' => 4, 'icon' => 'list-checks', 'teks' => 'Pastikan kalian membaca petunjuk penggunaan LKPD yang tersedia.'],
-                    ['nomor' => 5, 'icon' => 'pencil-line', 'teks' => 'Isilah semua perintah yang diberikan pada kegiatan pembelajaran dengan langsung menjawabnya di LKPD tersebut.'],
-                    ['nomor' => 6, 'icon' => 'message-question', 'teks' => 'Apabila terdapat kesulitan selama kegiatan pembelajaran silahkan diskusikan bersama teman sekelompok ataupun bertanya langsung pada guru.'],
+                    ['nomor' => 1, 'icon' => 'id-card', 'teks' => 'update'],
+                    ['nomor' => 2, 'icon' => 'book-open', 'teks' => 'update'],
+                    ['nomor' => 3, 'icon' => 'target', 'teks' => 'update'],
+                    ['nomor' => 4, 'icon' => 'list-checks', 'teks' => 'update'],
+                    ['nomor' => 5, 'icon' => 'pencil-line', 'teks' => 'update'],
+                    ['nomor' => 6, 'icon' => 'message-question', 'teks' => 'update'],
                 ],
             ]
         );

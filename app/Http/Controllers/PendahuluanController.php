@@ -70,20 +70,20 @@ class PendahuluanController extends Controller
         return Pendahuluan::firstOrCreate(
             ['kelas_id' => $kelas->id],
             [
-                'judul' => 'LKPD Berbasis Problem Based Learning Pada Materi Pencemaran Lingkungan',
-                'mapel' => 'Biologi',
-                'jenjang' => 'SMA',
-                'kelas_label' => 'Kelas X',
-                'fase' => 'Fase E',
-                'kurikulum' => 'Kurikulum Merdeka',
-                'penulis' => 'Nurul Istiqomah, S.Pd',
-                'pembimbing' => json_encode(['Dr. Tien Aminatun, S.Si., M.Si'], JSON_UNESCAPED_UNICODE),
-                'validator_media' => '',
-                'validator_materi' => '',
+                'judul' => 'update',
+                'mapel' => 'update',
+                'jenjang' => 'update',
+                'kelas_label' => 'update',
+                'fase' => 'update',
+                'kurikulum' => 'update',
+                'penulis' => 'update',
+                'pembimbing' => json_encode(['update'], JSON_UNESCAPED_UNICODE),
+                'validator_media' => 'update',
+                'validator_materi' => 'update',
                 'kata_pengantar' => [
-                    'Puji Syukur atas kehadirat Allah SWT yang telah melimpahkan rahmat dan hidayah-Nya sehingga penulis dapat menyelesaikan Lembar Kerja Peserta Didik (LKPD) Berbasis Problem Based Learning.',
-                    'LKPD ini disusun dengan harapan agar dapat digunakan sebagai bahan ajar peserta didik dalam pembelajaran Biologi serta LKPD yang dikembangkan oleh penulis memuat materi tentang pencemaran lingkungan untuk kelas X/Fase E SMA dengan menggunakan kurikulum merdeka. LKPD dengan menggunakan model pembelajaran berbasis Problem Based Learning, peserta didik akan melakukan kegiatan diskusi dan kegiatan praktek yang disuguhkan dengan permasalahan sehari-hari yang berkaitan langsung dengan materi yang dipelajari. Selain itu, peserta didik juga dilatih untuk membuat dugaan sementara atau hipotesis sebelum melakukan kegiatan.',
-                    'Penulis menyadari bahwa LKPD berbasis Problem Based Learning ini masih banyak yang harus diperbaiki. Oleh karena itu, penulis mengharapkan kritik dan saran yang bersifat membangun demi menyempurnakan LKPD ini untuk selanjutnya dapat menjadi lebih baik dan mempunyai potensi untuk dikembangkan. Dengan terselesaikannya LKPD ini, besar harapan penulis agar dapat bermanfaat bagi orang lain dan bagi peneliti sendiri.',
+                    'update',
+                    'update',
+                    'update',
                 ],
             ]
         );

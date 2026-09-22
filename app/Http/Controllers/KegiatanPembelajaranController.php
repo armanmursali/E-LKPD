@@ -63,8 +63,8 @@ class KegiatanPembelajaranController extends Controller
             'id' => $nextId,
             'nomor' => $nomor,
             'icon' => 'video',
-            'judul' => "Kegiatan Pembelajaran {$nomor}",
-            'bahan_ajar_label' => "Bahan Ajar Tambahan {$nomor}",
+            'judul' => 'update',
+            'bahan_ajar_label' => 'update',
         ]);
 
         $kegiatan->update(['items' => $items->values()->all()]);
@@ -127,8 +127,8 @@ class KegiatanPembelajaranController extends Controller
             ['kelas_id' => $kelas->id],
             [
                 'items' => [
-                    ['id' => 1, 'nomor' => 1, 'icon' => 'video', 'judul' => 'Kegiatan Pembelajaran 1', 'bahan_ajar_label' => 'Bahan Ajar Tambahan 1'],
-                    ['id' => 2, 'nomor' => 2, 'icon' => 'microscope', 'judul' => 'Kegiatan Pembelajaran 2', 'bahan_ajar_label' => 'Bahan Ajar Tambahan 2'],
+                    ['id' => 1, 'nomor' => 1, 'icon' => 'video', 'judul' => 'update', 'bahan_ajar_label' => 'Judul Bahan Ajar 1'],
+                    ['id' => 2, 'nomor' => 2, 'icon' => 'microscope', 'judul' => 'update', 'bahan_ajar_label' => 'Judul Bahan Ajar 2'],
                 ],
             ]
         );
