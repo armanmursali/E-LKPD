@@ -18,6 +18,13 @@ function savedAnswerText() {
     return Array.isArray(value) ? value.join(', ') : typeof value === 'object' && value !== null ? JSON.stringify(value) : String(value ?? '');
 }
 
+function savedCellAnswerText(rowIndex: number, cellIndex: number) {
+    if (!props.answerName) return '';
+    const cellVal = props.answers?.[`${props.answerName}.${rowIndex}.${cellIndex}`];
+    if (cellVal !== undefined && cellVal !== null) return String(cellVal);
+    return savedAnswerText();
+}
+
 function optionSelected(value: string) {
     const answer = savedAnswer();
     if (Array.isArray(answer)) return answer.includes(value);
@@ -321,8 +328,8 @@ function questionLabel(block: LkpdBlock): string {
                     <component :is="rowIndex < (block.headerRows ?? 0) ? 'th' : 'td'" v-for="(cell, cellIndex) in row" :key="cellIndex" class="border border-amber-300 p-2 text-left align-top" :style="{ backgroundColor: rowIndex < (block.headerRows ?? 0) ? block.headerColor : undefined, color: rowIndex < (block.headerRows ?? 0) ? block.headerTextColor : undefined }">
                         <div v-if="cell.type === 'paragraph'" class="break-words [overflow-wrap:anywhere]" :style="{ lineHeight: cell.jarakBaris ?? 1.5 }" v-html="sanitizeRichText(cell.text) || '&nbsp;'" />
                         <img v-else-if="cell.type === 'image' && cell.url" :src="cell.url" alt="" class="max-w-full rounded object-contain" :style="{ width: `${cell.lebar ?? 100}%` }" />
-                        <input v-else-if="cell.type === 'input_short_text'" :name="formFieldName(answerName)" :value="!interactive ? savedAnswerText() : undefined" :disabled="!interactive" type="text" class="w-full rounded border border-amber-300 bg-white px-2 py-1.5 text-current dark:border-border dark:bg-muted disabled:opacity-60" />
-                        <textarea v-else-if="cell.type === 'input_long_text'" :name="formFieldName(answerName)" :disabled="!interactive" rows="3" class="w-full rounded border border-amber-300 bg-white px-2 py-1.5 text-current dark:border-border dark:bg-muted disabled:opacity-60">{{ !interactive ? savedAnswerText() : '' }}</textarea>
+                        <input v-else-if="cell.type === 'input_short_text'" :name="formFieldName(`${answerName}.${rowIndex}.${cellIndex}`)" :value="!interactive ? savedCellAnswerText(rowIndex, cellIndex) : undefined" :disabled="!interactive" type="text" placeholder="Ketik jawaban..." class="w-full rounded border border-amber-300 bg-white px-2 py-1.5 text-current dark:border-border dark:bg-muted disabled:opacity-60" />
+                        <textarea v-else-if="cell.type === 'input_long_text'" :name="formFieldName(`${answerName}.${rowIndex}.${cellIndex}`)" :disabled="!interactive" rows="3" placeholder="Ketik jawaban..." class="w-full rounded border border-amber-300 bg-white px-2 py-1.5 text-current dark:border-border dark:bg-muted disabled:opacity-60">{{ !interactive ? savedCellAnswerText(rowIndex, cellIndex) : '' }}</textarea>
                         <span v-else class="text-xs text-amber-700">Belum ada isi</span>
                     </component>
                 </tr>
