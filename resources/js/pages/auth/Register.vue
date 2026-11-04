@@ -16,14 +16,14 @@ defineProps<{
 
 defineOptions({
     layout: {
-        title: 'Create an account',
-        description: 'Enter your details below to create your account',
+        title: 'Buat Akun Baru',
+        description: 'Lengkapi data di bawah ini untuk mulai membuat LKPD interaktif',
     },
 });
 </script>
 
 <template>
-    <Head title="Register" />
+    <Head title="Daftar Akun" />
 
     <Form
         v-bind="store.form()"
@@ -31,9 +31,23 @@ defineOptions({
         v-slot="{ errors, processing }"
         class="flex flex-col gap-6"
     >
-        <div class="grid gap-6">
+        <div class="grid gap-5">
+            <a
+                href="/auth/google"
+                class="inline-flex w-full items-center justify-center gap-2.5 rounded-lg border border-amber-300 bg-amber-50/60 px-4 py-2.5 text-sm font-bold text-amber-950 transition hover:bg-amber-100 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-100"
+            >
+                <span class="flex size-5 items-center justify-center rounded bg-amber-800 text-xs font-black text-white">G</span>
+                Daftar dengan Google
+            </a>
+
+            <div class="relative flex items-center justify-center">
+                <span class="h-px flex-1 bg-amber-200 dark:bg-border" />
+                <span class="px-3 text-xs font-medium text-amber-900/60 dark:text-muted-foreground">atau isi formulir</span>
+                <span class="h-px flex-1 bg-amber-200 dark:bg-border" />
+            </div>
+
             <div class="grid gap-2">
-                <Label for="name">Name</Label>
+                <Label for="name">Nama Lengkap</Label>
                 <Input
                     id="name"
                     type="text"
@@ -42,13 +56,13 @@ defineOptions({
                     :tabindex="1"
                     autocomplete="name"
                     name="name"
-                    placeholder="Full name"
+                    placeholder="Nama lengkap guru"
                 />
                 <InputError :message="errors.name" />
             </div>
 
             <div class="grid gap-2">
-                <Label for="email">Email address</Label>
+                <Label for="email">Alamat Email</Label>
                 <Input
                     id="email"
                     type="email"
@@ -56,34 +70,34 @@ defineOptions({
                     :tabindex="2"
                     autocomplete="email"
                     name="email"
-                    placeholder="email@example.com"
+                    placeholder="nama@sekolah.sch.id"
                 />
                 <InputError :message="errors.email" />
             </div>
 
             <div class="grid gap-2">
-                <Label for="password">Password</Label>
+                <Label for="password">Kata Sandi</Label>
                 <PasswordInput
                     id="password"
                     required
                     :tabindex="3"
                     autocomplete="new-password"
                     name="password"
-                    placeholder="Password"
+                    placeholder="Buat kata sandi"
                     :passwordrules="passwordRules"
                 />
                 <InputError :message="errors.password" />
             </div>
 
             <div class="grid gap-2">
-                <Label for="password_confirmation">Confirm password</Label>
+                <Label for="password_confirmation">Konfirmasi Kata Sandi</Label>
                 <PasswordInput
                     id="password_confirmation"
                     required
                     :tabindex="4"
                     autocomplete="new-password"
                     name="password_confirmation"
-                    placeholder="Confirm password"
+                    placeholder="Ulangi kata sandi"
                     :passwordrules="passwordRules"
                 />
                 <InputError :message="errors.password_confirmation" />
@@ -91,23 +105,23 @@ defineOptions({
 
             <Button
                 type="submit"
-                class="mt-2 w-full"
+                class="mt-2 w-full bg-amber-800 text-white hover:bg-amber-700"
                 tabindex="5"
                 :disabled="processing"
                 data-test="register-user-button"
             >
                 <Spinner v-if="processing" />
-                Create account
+                Buat Akun
             </Button>
         </div>
 
         <div class="text-muted-foreground text-center text-sm">
-            Already have an account?
+            Sudah punya akun?
             <TextLink
                 :href="login()"
-                class="underline underline-offset-4"
+                class="font-semibold text-amber-800 underline underline-offset-4 dark:text-amber-300"
                 :tabindex="6"
-                >Log in</TextLink
+                >Masuk</TextLink
             >
         </div>
     </Form>

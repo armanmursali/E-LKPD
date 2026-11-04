@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, router } from "@inertiajs/vue3";
-import { CheckCircle } from "@lucide/vue";
+import { ArrowLeft, CheckCircle, Send, UserRound } from "@lucide/vue";
 import { computed, ref } from "vue";
 import DynamicHeadContent from "@/components/lkpd/DynamicHeadContent.vue";
 import LkpdBlockPreview from "@/components/lkpd/LkpdBlockPreview.vue";
@@ -81,20 +81,26 @@ function submitAnswers() {
 
 <template>
   <Head :title="kegiatan.judul" />
-  <div class="min-h-screen bg-amber-50/60 px-3 py-4 sm:px-4 sm:py-6 md:px-8 md:py-10 dark:bg-background">
-    <div class="mx-auto max-w-4xl">
-      <header class="flex justify-between">
+  <div class="min-h-screen bg-amber-50/60 px-3 py-4 sm:px-5 sm:py-6 md:px-8 md:py-10 dark:bg-background">
+    <div class="mx-auto max-w-4xl space-y-5">
+      <header class="flex items-center justify-between gap-3">
+        <Link
+          :href="`/kelas-publik/${kelas.public_token}`"
+          class="inline-flex items-center gap-2 font-black tracking-wider text-amber-950 dark:text-amber-100"
+        >
+          <span class="flex size-8 items-center justify-center rounded-lg bg-amber-800 text-sm text-white">E</span>
+          <span>E-LKPD WEB</span>
+        </Link>
         <Link
           :href="`/kelas-publik/${kelas.public_token}/kegiatan-pembelajaran`"
-          class="font-extrabold tracking-wide text-amber-900 dark:text-amber-100"
-          >E-LKPD WEB</Link
-        ><Link
-          :href="`/kelas-publik/${kelas.public_token}/kegiatan-pembelajaran`"
-          class="text-sm font-semibold text-amber-900 hover:underline dark:text-amber-100"
-          >Kembali</Link
+          class="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-white px-3.5 py-1.5 text-xs font-bold text-amber-900 shadow-xs transition hover:bg-amber-50 dark:border-border dark:bg-card dark:text-amber-100"
         >
+          <ArrowLeft class="size-3.5" />
+          Kembali ke Daftar Kegiatan
+        </Link>
       </header>
-      <main class="mt-6 rounded-lg bg-white p-4 shadow-xl sm:mt-8 sm:p-10 dark:bg-card">
+
+      <main class="rounded-2xl border border-amber-200 bg-white p-4 shadow-xl sm:p-10 dark:border-border dark:bg-card">
         <LkpdSectionLabel :label="kegiatan.judul" />
         <DynamicHeadContent
           :identitas-mapel="identitasMapel"
@@ -107,28 +113,34 @@ function submitAnswers() {
             <template v-for="(block, index) in publicBlocks" :key="index">
               <div
                 v-if="block.type === 'identity'"
-                class="space-y-2 border-b border-amber-300 pb-3 text-sm text-amber-950 dark:border-border dark:text-foreground"
+                class="rounded-xl border border-amber-300 bg-amber-50/70 p-4 text-sm text-amber-950 shadow-2xs dark:border-border dark:bg-secondary dark:text-foreground"
               >
-                <label class="block">
-                  <span class="font-semibold">Nama Siswa</span>
-                  <input
-                    v-model="participantName"
-                    required
-                    name="nama_peserta"
-                    class="mt-1 w-full rounded-md border border-amber-300 bg-white px-2 py-2 text-sm dark:border-border dark:bg-muted dark:text-foreground"
-                    placeholder="Tulis nama"
-                  />
-                </label>
-                <label v-if="participantType === 'Kelompok'" class="block">
-                  <span class="font-semibold">Nama Kelompok</span>
-                  <input
-                    v-model="participantGroupName"
-                    required
-                    name="nama_kelompok"
-                    class="mt-1 w-full rounded-md border border-amber-300 bg-white px-2 py-1 text-sm"
-                    placeholder="Tulis nama kelompok"
-                  />
-                </label>
+                <div class="mb-3 flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-amber-800">
+                  <UserRound class="size-4" />
+                  <span>Identitas Pengerjaan ({{ participantType }})</span>
+                </div>
+                <div class="grid gap-3 sm:grid-cols-2">
+                  <label class="block" :class="participantType !== 'Kelompok' ? 'sm:col-span-2' : ''">
+                    <span class="text-xs font-bold">Nama Lengkap Siswa <span class="text-red-600">*</span></span>
+                    <input
+                      v-model="participantName"
+                      required
+                      name="nama_peserta"
+                      class="mt-1 w-full rounded-lg border border-amber-300 bg-white px-3 py-2 text-sm outline-none focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20 dark:border-border dark:bg-muted dark:text-foreground"
+                      placeholder="Masukkan nama lengkapmu..."
+                    />
+                  </label>
+                  <label v-if="participantType === 'Kelompok'" class="block">
+                    <span class="text-xs font-bold">Nama Kelompok <span class="text-red-600">*</span></span>
+                    <input
+                      v-model="participantGroupName"
+                      required
+                      name="nama_kelompok"
+                      class="mt-1 w-full rounded-lg border border-amber-300 bg-white px-3 py-2 text-sm outline-none focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20"
+                      placeholder="Contoh: Kelompok 1"
+                    />
+                  </label>
+                </div>
               </div>
               <LkpdBlockPreview
                 v-else
@@ -145,25 +157,26 @@ function submitAnswers() {
         <div class="mt-8 border-t border-amber-200 pt-6 text-center dark:border-border">
           <button
             type="button"
-            class="inline-flex items-center gap-2 rounded-md bg-amber-800 px-6 py-3 font-semibold text-white hover:bg-amber-900"
+            class="inline-flex items-center gap-2 rounded-xl bg-amber-800 px-7 py-3.5 font-bold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-amber-700"
             @click="submitAnswers"
           >
-            <CheckCircle class="size-5" />
-            {{ submitted ? "Jawaban berhasil dikirim" : "Kirim Jawaban" }}
+            <CheckCircle v-if="submitted" class="size-5" />
+            <Send v-else class="size-4" />
+            {{ submitted ? "Jawaban berhasil dikirim" : "Kirim Jawaban LKPD" }}
           </button>
-          <p v-if="!hasIdentityBlock" class="mt-2 text-sm text-amber-700 dark:text-amber-300">
+          <p v-if="!hasIdentityBlock" class="mt-2.5 text-xs font-medium text-amber-700 dark:text-amber-300">
             Tambahkan blok Identitas Siswa di builder sebelum mengirim.
           </p>
-          <p v-else-if="!participantName.trim()" class="mt-2 text-sm text-amber-700 dark:text-amber-300">
-            Isi nama siswa sebelum mengirim.
+          <p v-else-if="!participantName.trim()" class="mt-2.5 text-xs font-medium text-amber-700 dark:text-amber-300">
+            Pastikan nama siswa sudah diisi sebelum mengirim jawaban.
           </p>
           <p
             v-else-if="participantType === 'Kelompok' && !participantGroupName.trim()"
-            class="mt-2 text-sm text-amber-700 dark:text-amber-300"
+            class="mt-2.5 text-xs font-medium text-amber-700 dark:text-amber-300"
           >
-            Isi nama kelompok sebelum mengirim.
+            Pastikan nama kelompok sudah diisi sebelum mengirim jawaban.
           </p>
-          <p v-if="submitted" class="mt-2 text-sm text-amber-800 dark:text-amber-300">
+          <p v-if="submitted" class="mt-2.5 text-sm font-semibold text-emerald-700 dark:text-emerald-400">
             Jawaban Anda sudah diterima.
           </p>
         </div>
@@ -173,23 +186,23 @@ function submitAnswers() {
 
   <div
     v-if="submitted"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-amber-950/45 p-4"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-amber-950/50 p-4 backdrop-blur-xs"
     role="dialog"
     aria-modal="true"
     aria-labelledby="submission-success-title"
   >
-    <div class="w-full max-w-md rounded-xl bg-white p-6 text-center shadow-2xl sm:p-8">
-      <CheckCircle class="mx-auto size-14 text-emerald-600" />
+    <div class="w-full max-w-md rounded-2xl bg-white p-6 text-center shadow-2xl sm:p-8">
+      <CheckCircle class="mx-auto size-16 text-emerald-600" />
       <h2 id="submission-success-title" class="mt-4 text-2xl font-bold text-amber-950">
         Terima kasih!
       </h2>
       <p class="mt-2 text-sm leading-relaxed text-amber-900/75">
-        Jawaban kamu sudah berhasil dikirim. Tetap semangat belajar!
+        Jawaban kamu sudah berhasil dikirim ke guru. Tetap semangat belajar!
       </p>
       <Link
         :href="`/kelas-publik/${kelas.public_token}`"
-        class="mt-6 inline-flex w-full items-center justify-center rounded-md bg-amber-800 px-5 py-3 text-sm font-semibold text-white hover:bg-amber-900"
-        >Kembali ke Kelas</Link
+        class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-amber-800 px-5 py-3 text-sm font-bold text-white hover:bg-amber-900"
+        >Kembali ke Beranda Kelas</Link
       >
     </div>
   </div>

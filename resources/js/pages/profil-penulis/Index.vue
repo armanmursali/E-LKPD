@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { ImagePlus, Pencil, X } from '@lucide/vue';
+import { ArrowLeft, ImagePlus, Pencil, X } from '@lucide/vue';
 import { ref } from 'vue';
 import LkpdSectionLabel from '@/components/lkpd/LkpdSectionLabel.vue';
 import ProfilPenulisContent from '@/components/lkpd/ProfilPenulisContent.vue';
 
 defineOptions({
     layout: {
-        breadcrumbs: [{ title: 'Profil Penulis' }],
+        breadcrumbs: [
+            { title: 'Daftar Kelas', href: '/kelas' },
+            { title: 'Profil Penulis' },
+        ],
     },
 });
 
@@ -72,22 +75,28 @@ function submitEdit() {
 <template>
     <Head title="Profil Penulis" />
 
-    <div class="min-h-screen bg-background">
-        <div class="flex items-center justify-between px-6 py-5 sm:px-10">
-            <Link href="/kelas" class="text-lg font-extrabold tracking-wide text-foreground">E-LKPD WEB</Link>
-            <Link :href="`/kelas/${kelas.id}`" class="text-sm font-semibold text-foreground hover:underline">Kembali</Link>
-        </div>
+    <div class="min-h-screen bg-amber-50/60 px-4 py-6 sm:px-6 md:px-8 dark:bg-background">
+        <div class="mx-auto max-w-5xl space-y-5 pb-16">
+            <div>
+                <Link
+                    :href="`/kelas/${kelas.id}`"
+                    class="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-amber-900 shadow-xs transition hover:border-amber-300 hover:bg-amber-50 dark:border-border dark:bg-card dark:text-amber-100"
+                >
+                    <ArrowLeft class="size-3.5" />
+                    Kembali ke {{ kelas.nama }}
+                </Link>
+            </div>
 
-        <div class="mx-auto max-w-5xl px-4 pb-16">
-            <div class="relative overflow-hidden rounded-lg bg-white p-6 shadow-xl sm:p-10">
+            <div class="relative overflow-hidden rounded-2xl border border-amber-200 bg-white p-6 shadow-md sm:p-10 dark:border-border dark:bg-card">
                 <button
                     type="button"
                     :aria-label="editMode ? 'Batal edit' : 'Edit profil penulis'"
-                    class="absolute top-4 right-4 flex size-8 items-center justify-center rounded-full border text-amber-900 shadow-sm transition hover:bg-amber-50"
+                    class="absolute top-4 right-4 inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50/70 px-3 py-1.5 text-xs font-semibold text-amber-900 shadow-2xs transition hover:bg-amber-100 dark:border-amber-700 dark:bg-secondary dark:text-amber-100"
                     @click="editMode ? cancelEdit() : startEdit()"
                 >
-                    <X v-if="editMode" class="size-4" />
-                    <Pencil v-else class="size-4" />
+                    <X v-if="editMode" class="size-3.5" />
+                    <Pencil v-else class="size-3.5" />
+                    <span>{{ editMode ? 'Batal' : 'Edit' }}</span>
                 </button>
 
                 <LkpdSectionLabel label="Profil Penulis" />

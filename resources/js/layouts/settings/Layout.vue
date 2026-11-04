@@ -12,15 +12,15 @@ import type { NavItem } from '@/types';
 
 const sidebarNavItems: NavItem[] = [
     {
-        title: 'Profile',
+        title: 'Profil',
         href: editProfile(),
     },
     {
-        title: 'Security',
+        title: 'Keamanan',
         href: editSecurity(),
     },
     {
-        title: 'Appearance',
+        title: 'Tampilan',
         href: editAppearance(),
     },
 ];
@@ -29,42 +29,49 @@ const { isCurrentOrParentUrl } = useCurrentUrl();
 </script>
 
 <template>
-    <div class="px-4 py-6">
-        <Heading
-            title="Settings"
-            description="Manage your profile and account settings"
-        />
+    <div class="min-h-full bg-amber-50/60 px-4 py-6 sm:px-6 lg:px-8 dark:bg-background">
+        <div class="mx-auto max-w-5xl space-y-6">
+            <div class="rounded-2xl border border-amber-200 bg-white p-5 shadow-sm sm:p-6 dark:border-border dark:bg-card">
+                <Heading
+                    title="Pengaturan Akun"
+                    description="Kelola profil, kata sandi, keamanan, dan tampilan ruang kerja Anda"
+                />
+            </div>
 
-        <div class="flex flex-col lg:flex-row lg:space-x-12">
-            <aside class="w-full max-w-xl lg:w-48">
-                <nav
-                    class="flex flex-col space-y-1 space-x-0"
-                    aria-label="Settings"
-                >
-                    <Button
-                        v-for="item in sidebarNavItems"
-                        :key="toUrl(item.href)"
-                        variant="ghost"
-                        :class="[
-                            'w-full justify-start',
-                            { 'bg-muted': isCurrentOrParentUrl(item.href) },
-                        ]"
-                        as-child
+            <div class="flex flex-col gap-6 lg:flex-row">
+                <aside class="w-full lg:w-56 shrink-0">
+                    <nav
+                        class="flex flex-row gap-1 overflow-x-auto rounded-xl border border-amber-200 bg-white p-2 shadow-sm lg:flex-col dark:border-border dark:bg-card"
+                        aria-label="Pengaturan"
                     >
-                        <Link :href="item.href">
-                            <component :is="item.icon" class="h-4 w-4" />
-                            {{ item.title }}
-                        </Link>
-                    </Button>
-                </nav>
-            </aside>
+                        <Button
+                            v-for="item in sidebarNavItems"
+                            :key="toUrl(item.href)"
+                            variant="ghost"
+                            :class="[
+                                'w-full justify-start font-semibold',
+                                {
+                                    'bg-amber-100 text-amber-950 hover:bg-amber-100 dark:bg-accent dark:text-amber-50':
+                                        isCurrentOrParentUrl(item.href),
+                                },
+                            ]"
+                            as-child
+                        >
+                            <Link :href="item.href">
+                                <component :is="item.icon" class="h-4 w-4" />
+                                {{ item.title }}
+                            </Link>
+                        </Button>
+                    </nav>
+                </aside>
 
-            <Separator class="my-6 lg:hidden" />
+                <Separator class="hidden" />
 
-            <div class="flex-1 md:max-w-2xl">
-                <section class="max-w-xl space-y-12">
-                    <slot />
-                </section>
+                <div class="flex-1 rounded-2xl border border-amber-200 bg-white p-6 shadow-sm sm:p-8 dark:border-border dark:bg-card">
+                    <section class="max-w-xl space-y-10">
+                        <slot />
+                    </section>
+                </div>
             </div>
         </div>
     </div>

@@ -1,7 +1,48 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
-import LkpdSectionLabel from '@/components/lkpd/LkpdSectionLabel.vue';
+import { ArrowLeft } from '@lucide/vue';
 import EvaluasiPembelajaranList, { type EvaluasiItem } from '@/components/EvaluasiPembelajaranList.vue';
-defineProps<{ kelas: { public_token: string }; evaluasi: EvaluasiItem[] }>();
+import LkpdSectionLabel from '@/components/lkpd/LkpdSectionLabel.vue';
+
+defineProps<{ kelas: { public_token: string; nama?: string }; evaluasi: EvaluasiItem[] }>();
 </script>
-<template><Head title="Evaluasi Pembelajaran" /><div class="min-h-screen bg-amber-50/60 p-6 md:p-10"><div class="mx-auto max-w-5xl"><header class="flex justify-between"><Link :href="`/kelas-publik/${kelas.public_token}`" class="font-extrabold text-amber-900">E-LKPD WEB</Link><Link :href="`/kelas-publik/${kelas.public_token}`" class="text-sm font-semibold text-amber-900">Kembali</Link></header><main class="mt-8 rounded-lg bg-white/0"><LkpdSectionLabel label="Evaluasi Pembelajaran" /><EvaluasiPembelajaranList :evaluasi="evaluasi" /></main></div></div></template>
+
+<template>
+    <Head title="Evaluasi Pembelajaran" />
+    <div class="evaluation-public-page">
+        <div class="mx-auto max-w-5xl px-4 py-6 sm:px-6 md:py-10">
+            <header class="flex items-center justify-between gap-3">
+                <Link :href="`/kelas-publik/${kelas.public_token}`" class="inline-flex items-center gap-2.5 font-black tracking-wider text-white">
+                    <span class="flex size-8 items-center justify-center rounded-lg bg-[#5e402a] text-sm text-white">E</span>
+                    <span>E-LKPD WEB</span>
+                </Link>
+                <Link
+                    :href="`/kelas-publik/${kelas.public_token}`"
+                    class="inline-flex items-center gap-2 rounded-full bg-white/95 px-3.5 py-1.5 text-xs font-bold text-[#5e402a] shadow-xs transition hover:-translate-y-0.5 hover:bg-white"
+                >
+                    <ArrowLeft class="size-3.5" />
+                    Kembali ke Kelas
+                </Link>
+            </header>
+
+            <main class="mt-8">
+                <div class="mb-6 text-center text-white">
+                    <LkpdSectionLabel label="Evaluasi Pembelajaran" />
+                    <p class="mx-auto -mt-4 max-w-xl text-sm font-medium text-white/90">
+                        Pilih angket Pre-test atau Post-test di bawah ini sesuai arahan guru.
+                    </p>
+                </div>
+                <EvaluasiPembelajaranList :evaluasi="evaluasi" />
+            </main>
+        </div>
+    </div>
+</template>
+
+<style scoped>
+.evaluation-public-page {
+    min-height: 100vh;
+    background-color: #ddb27b;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+    background-size: 30px 30px;
+}
+</style>

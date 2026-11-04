@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link } from "@inertiajs/vue3";
-import { Download, Users } from "@lucide/vue";
+import { ArrowLeft, ArrowRight, CheckCircle2, Clock, Download, Users } from "@lucide/vue";
 
 type Submission = {
   id: number;
@@ -12,9 +12,8 @@ type Submission = {
 defineOptions({
   layout: {
     breadcrumbs: [
-      {
-        title: "Partisipan",
-      },
+      { title: "Daftar Kelas", href: "/kelas" },
+      { title: "Jawaban Peserta" },
     ],
   },
 });
@@ -26,75 +25,100 @@ defineProps<{
 </script>
 <template>
   <Head title="Jawaban Peserta" />
-  <div class="min-h-screen bg-amber-50/60 p-3 sm:p-4 md:p-8">
-    <div class="mx-auto max-w-4xl">
-      <Link
-        :href="`/kelas/${kelas.id}/kegiatan-pembelajaran`"
-        class="text-sm font-semibold text-amber-900 hover:underline"
-        >Kembali ke kegiatan</Link
-      >
-      <div class="mt-6 flex flex-wrap items-end justify-between gap-4 sm:mt-8">
-        <div>
-          <p class="text-xs font-bold uppercase tracking-widest text-amber-700">
-            Hasil pengerjaan
-          </p>
-          <h1 class="mt-2 text-2xl font-bold text-amber-950 sm:text-3xl">Jawaban Peserta</h1>
-        </div>
-        <div class="flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-end">
-          <Users class="size-8 text-amber-800 sm:size-9" /><a
-            :href="`/kelas/${kelas.id}/kegiatan-pembelajaran/${nomor}/jawaban/export`"
-            class="inline-flex items-center gap-2 rounded-md bg-amber-800 px-3 py-2 text-sm font-bold text-white hover:bg-amber-900 sm:px-4"
-            ><Download class="size-4" /> Unduh Excel</a
-          >
-        </div>
+  <div class="min-h-screen bg-amber-50/60 p-3 sm:p-5 md:p-8 dark:bg-background">
+    <div class="mx-auto max-w-5xl space-y-6">
+      <div>
+        <Link
+          :href="`/kelas/${kelas.id}/kegiatan-pembelajaran`"
+          class="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-amber-900 shadow-xs transition hover:border-amber-300 hover:bg-amber-50 dark:border-border dark:bg-card dark:text-amber-100"
+        >
+          <ArrowLeft class="size-3.5" />
+          Kembali ke Kegiatan Pembelajaran
+        </Link>
       </div>
+
+      <div class="flex flex-wrap items-end justify-between gap-4 rounded-2xl border border-amber-200 bg-white p-5 shadow-sm sm:p-6 dark:border-border dark:bg-card">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-widest text-amber-700 dark:text-amber-400">
+            Hasil pengerjaan · Kegiatan {{ nomor }}
+          </p>
+          <h1 class="mt-1.5 text-2xl font-bold text-amber-950 sm:text-3xl dark:text-amber-50">
+            Jawaban Peserta Didik
+          </h1>
+          <p class="mt-1 text-sm text-amber-900/70 dark:text-muted-foreground">
+            {{ submissions.length }} kiriman jawaban masuk pada kegiatan ini.
+          </p>
+        </div>
+        <a
+          :href="`/kelas/${kelas.id}/kegiatan-pembelajaran/${nomor}/jawaban/export`"
+          class="inline-flex items-center gap-2 rounded-xl bg-amber-800 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-amber-700"
+        >
+          <Download class="size-4" /> Unduh Rekap Excel
+        </a>
+      </div>
+
       <div
-        class="mt-6 overflow-x-auto rounded-xl border border-amber-200 bg-white shadow-sm"
+        class="overflow-hidden rounded-2xl border border-amber-200 bg-white shadow-sm dark:border-border dark:bg-card"
       >
         <div v-if="!submissions.length" class="p-12 text-center text-amber-900/70">
-          Belum ada siswa atau kelompok yang mengirim jawaban.
+          <Users class="mx-auto size-12 text-amber-700/60" />
+          <p class="mt-3 font-bold text-amber-950 dark:text-amber-50">Belum ada kiriman jawaban</p>
+          <p class="mt-1 text-sm">Siswa atau kelompok yang mengirim jawaban LKPD akan muncul di sini.</p>
         </div>
-        <table v-else class="w-full min-w-[680px] text-left text-sm">
-          <thead class="bg-amber-50 text-amber-900">
-            <tr>
-              <th class="px-5 py-3">Nama siswa/kelompok</th>
-              <th class="px-5 py-3">Tipe</th>
-              <th class="px-5 py-3">Nilai</th>
-              <th class="px-5 py-3">Dikirim</th>
-              <th class="px-5 py-3 text-right">Lihat</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-amber-100">
-            <tr
-              v-for="submission in submissions"
-              :key="submission.id"
-              class="hover:bg-amber-50/60"
-            >
-              <td class="px-5 py-4 font-semibold text-amber-950">
-                {{ submission.nama_peserta }}
-              </td>
-              <td class="px-5 py-4 text-amber-900/70">{{ submission.tipe_peserta }}</td>
-              <td
-                class="px-5 py-4 font-semibold"
-                :class="
-                  submission.nilai === null ? 'text-amber-900/50' : 'text-amber-800'
-                "
+        <div v-else class="overflow-x-auto">
+          <table class="w-full min-w-[680px] text-left text-sm">
+            <thead class="border-b border-amber-200 bg-amber-50/80 text-xs uppercase tracking-wider text-amber-900/80 dark:border-border dark:bg-secondary dark:text-amber-200">
+              <tr>
+                <th class="px-5 py-3.5 font-bold">Nama Siswa / Kelompok</th>
+                <th class="px-5 py-3.5 font-bold">Tipe</th>
+                <th class="px-5 py-3.5 font-bold">Status & Nilai</th>
+                <th class="px-5 py-3.5 font-bold">Waktu Dikirim</th>
+                <th class="px-5 py-3.5 text-right font-bold">Tindakan</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-amber-100 dark:divide-border">
+              <tr
+                v-for="submission in submissions"
+                :key="submission.id"
+                class="transition hover:bg-amber-50/60 dark:hover:bg-accent"
               >
-                {{ submission.nilai === null ? "Belum dinilai" : submission.nilai }}
-              </td>
-              <td class="px-5 py-4 text-amber-900/70">
-                {{ new Date(submission.created_at).toLocaleString("id-ID") }}
-              </td>
-              <td class="px-5 py-4 text-right">
-                <Link
-                  :href="`/kelas/${kelas.id}/kegiatan-pembelajaran/${nomor}/jawaban/${submission.id}`"
-                  class="font-semibold text-amber-800 hover:underline"
-                  >Periksa</Link
-                >
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                <td class="px-5 py-4 font-bold text-amber-950 dark:text-amber-50">
+                  {{ submission.nama_peserta }}
+                </td>
+                <td class="px-5 py-4">
+                  <span class="rounded-md bg-amber-100/70 px-2.5 py-1 text-xs font-semibold text-amber-900 dark:bg-secondary dark:text-amber-200">
+                    {{ submission.tipe_peserta }}
+                  </span>
+                </td>
+                <td class="px-5 py-4">
+                  <span
+                    class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold"
+                    :class="
+                      submission.nilai === null
+                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300'
+                        : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                    "
+                  >
+                    <Clock v-if="submission.nilai === null" class="size-3.5" />
+                    <CheckCircle2 v-else class="size-3.5" />
+                    {{ submission.nilai === null ? "Belum dinilai" : `Nilai: ${submission.nilai}` }}
+                  </span>
+                </td>
+                <td class="px-5 py-4 text-xs text-amber-900/70 dark:text-muted-foreground">
+                  {{ new Date(submission.created_at).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" }) }}
+                </td>
+                <td class="px-5 py-4 text-right">
+                  <Link
+                    :href="`/kelas/${kelas.id}/kegiatan-pembelajaran/${nomor}/jawaban/${submission.id}`"
+                    class="inline-flex items-center gap-1.5 rounded-lg bg-amber-800 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-amber-700"
+                  >
+                    Periksa <ArrowRight class="size-3.5" />
+                  </Link>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

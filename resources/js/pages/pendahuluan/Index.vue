@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { ChevronLeft, ChevronRight, Pencil, X } from '@lucide/vue';
+import { ArrowLeft, ChevronLeft, ChevronRight, Pencil, X } from '@lucide/vue';
 import { computed, ref } from 'vue';
 import LkpdSectionLabel from '@/components/lkpd/LkpdSectionLabel.vue';
 import ParagraphContent from '@/components/lkpd/ParagraphContent.vue';
@@ -22,10 +22,8 @@ type Sampul = {
 defineOptions({
     layout: {
         breadcrumbs: [
-            {
-                title: 'Pendahuluan',
-              
-            },
+            { title: 'Daftar Kelas', href: '/kelas' },
+            { title: 'Pendahuluan' },
         ],
     },
 });
@@ -115,120 +113,140 @@ function removePembimbing(index: number) {
 <template>
     <Head title="Pendahuluan" />
 
-    <div class="relative min-h-screen overflow-hidden bg-background">
-        <div class="flex items-center justify-between px-6 py-5 sm:px-10">
-            <span class="text-lg font-extrabold tracking-wide text-foreground">E-LKPD WEB</span>
-            <Link :href="`/kelas/${kelas.id}`" class="text-sm font-semibold text-foreground hover:underline">Kembali</Link>
-        </div>
-
-        <div class="mx-auto flex max-w-4xl items-center gap-3 px-4 pb-16 sm:gap-6">
-            <button
-                type="button"
-                aria-label="Halaman sebelumnya"
-                class="flex size-11 shrink-0 items-center justify-center rounded-full bg-amber-100/70 text-amber-900 shadow transition hover:bg-amber-100"
-                @click="prevPage"
-            >
-                <ChevronLeft class="size-5" />
-            </button>
-
-            <div class="relative flex-1 overflow-hidden rounded-lg bg-white p-6 shadow-xl sm:p-10">
-                <button
-                    type="button"
-                    :aria-label="editMode ? 'Batal edit' : 'Edit pendahuluan'"
-                    class="absolute top-4 right-4 flex size-8 items-center justify-center rounded-full border text-amber-900 shadow-sm transition hover:bg-amber-50"
-                    @click="editMode ? cancelEdit() : startEdit()"
+    <div class="relative min-h-screen overflow-hidden bg-amber-50/60 px-4 py-6 sm:px-6 md:px-8 dark:bg-background">
+        <div class="mx-auto max-w-4xl space-y-5 pb-14">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <Link
+                    :href="`/kelas/${kelas.id}`"
+                    class="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-amber-900 shadow-xs transition hover:border-amber-300 hover:bg-amber-50 dark:border-border dark:bg-card dark:text-amber-100"
                 >
-                    <X v-if="editMode" class="size-4" />
-                    <Pencil v-else class="size-4" />
-                </button>
-
-                <LkpdSectionLabel :label="pages[currentPage].label" />
-
-                <Transition name="slide" mode="out-in">
-                    <div v-if="currentPageKey === 'perkenalan'" key="perkenalan" class="text-center">
-                        <PerkenalanContent v-if="!editMode" :sampul="sampul" />
-
-                        <form v-else class="mx-auto max-w-lg space-y-3 text-left" @submit.prevent="submitEdit">
-                            <div>
-                                <label class="text-xs font-bold text-amber-900">Judul</label>
-                                <textarea v-model="form.judul" rows="2" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
-                                <p v-if="form.errors.judul" class="mt-1 text-xs text-destructive">{{ form.errors.judul }}</p>
-                            </div>
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="text-xs font-bold text-amber-900">Mapel</label>
-                                    <input v-model="form.mapel" type="text" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
-                                </div>
-                                <div>
-                                    <label class="text-xs font-bold text-amber-900">Jenjang</label>
-                                    <input v-model="form.jenjang" type="text" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
-                                </div>
-                                <div>
-                                    <label class="text-xs font-bold text-amber-900">Label Kelas</label>
-                                    <input v-model="form.kelas_label" type="text" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
-                                </div>
-                                <div>
-                                    <label class="text-xs font-bold text-amber-900">Fase</label>
-                                    <input v-model="form.fase" type="text" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
-                                </div>
-                            </div>
-                            <div>
-                                <label class="text-xs font-bold text-amber-900">Kurikulum</label>
-                                <input v-model="form.kurikulum" type="text" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
-                            </div>
-                            <div>
-                                <label class="text-xs font-bold text-amber-900">Penulis</label>
-                                <input v-model="form.penulis" type="text" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
-                            </div>
-                            <div>
-                                <div class="mb-1 flex items-center justify-between">
-                                    <label class="text-xs font-bold text-amber-900">Pembimbing</label>
-                                    <button type="button" class="text-xs font-semibold text-amber-800 hover:underline" @click="addPembimbing">+ Tambah pembimbing</button>
-                                </div>
-                                <div v-for="(pembimbing, index) in form.pembimbing" :key="index" class="mb-2 flex gap-2">
-                                    <input v-model="form.pembimbing[index]" type="text" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" :placeholder="`Nama pembimbing ${index + 1}`" />
-                                    <button v-if="form.pembimbing.length > 1" type="button" class="mt-1 rounded-md border px-3 text-sm text-red-700 hover:bg-red-50" @click="removePembimbing(index)">Hapus</button>
-                                </div>
-                                <p v-if="form.errors.pembimbing" class="mt-1 text-xs text-destructive">{{ form.errors.pembimbing }}</p>
-                            </div>
-                            <div>
-                                <label class="text-xs font-bold text-amber-900">Validator Ahli Media</label>
-                                <input v-model="form.validator_media" type="text" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
-                            </div>
-                            <div>
-                                <label class="text-xs font-bold text-amber-900">Validator Ahli Materi</label>
-                                <input v-model="form.validator_materi" type="text" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
-                            </div>
-                            <div class="flex justify-end gap-2 pt-2">
-                                <button type="button" class="rounded-md border px-4 py-2 text-sm" @click="cancelEdit">Batal</button>
-                                <button type="submit" class="rounded-md bg-amber-800 px-4 py-2 text-sm font-medium text-white disabled:opacity-60" :disabled="form.processing">Simpan</button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div v-else key="pengantar">
-                        <ParagraphContent v-if="!editMode" :paragraphs="pendahuluan.kata_pengantar" />
-                        <form v-else class="space-y-3" @submit.prevent="submitEdit">
-                            <label class="text-xs font-bold text-amber-900">Kata Pengantar (pisahkan paragraf dengan baris kosong)</label>
-                            <textarea v-model="form.kata_pengantar" rows="10" class="w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
-                            <p v-if="form.errors.kata_pengantar" class="text-xs text-destructive">{{ form.errors.kata_pengantar }}</p>
-                            <div class="flex justify-end gap-2 pt-2">
-                                <button type="button" class="rounded-md border px-4 py-2 text-sm" @click="cancelEdit">Batal</button>
-                                <button type="submit" class="rounded-md bg-amber-800 px-4 py-2 text-sm font-medium text-white disabled:opacity-60" :disabled="form.processing">Simpan</button>
-                            </div>
-                        </form>
-                    </div>
-                </Transition>
+                    <ArrowLeft class="size-3.5" />
+                    Kembali ke {{ kelas.nama }}
+                </Link>
+                <div class="inline-flex rounded-full border border-amber-200 bg-white p-1 shadow-2xs dark:border-border dark:bg-card">
+                    <button
+                        v-for="(p, idx) in pages"
+                        :key="p.key"
+                        type="button"
+                        class="rounded-full px-3.5 py-1 text-xs font-bold transition"
+                        :class="currentPage === idx ? 'bg-amber-800 text-white shadow-xs' : 'text-amber-900/70 hover:text-amber-950 dark:text-amber-200'"
+                        @click="currentPage = idx"
+                    >
+                        {{ p.label }}
+                    </button>
+                </div>
             </div>
 
-            <button
-                type="button"
-                aria-label="Halaman berikutnya"
-                class="flex size-11 shrink-0 items-center justify-center rounded-full bg-amber-100/70 text-amber-900 shadow transition hover:bg-amber-100"
-                @click="nextPage"
-            >
-                <ChevronRight class="size-5" />
-            </button>
+            <div class="flex items-center gap-2 sm:gap-5">
+                <button
+                    type="button"
+                    aria-label="Halaman sebelumnya"
+                    class="hidden size-11 shrink-0 items-center justify-center rounded-full border border-amber-200 bg-white text-amber-900 shadow-sm transition hover:bg-amber-100 sm:flex dark:border-border dark:bg-card dark:text-amber-100"
+                    @click="prevPage"
+                >
+                    <ChevronLeft class="size-5" />
+                </button>
+
+                <div class="relative flex-1 overflow-hidden rounded-2xl border border-amber-200 bg-white p-6 shadow-md sm:p-10 dark:border-border dark:bg-card">
+                    <button
+                        type="button"
+                        :aria-label="editMode ? 'Batal edit' : 'Edit pendahuluan'"
+                        class="absolute top-4 right-4 inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50/70 px-3 py-1.5 text-xs font-semibold text-amber-900 shadow-2xs transition hover:bg-amber-100 dark:border-amber-700 dark:bg-secondary dark:text-amber-100"
+                        @click="editMode ? cancelEdit() : startEdit()"
+                    >
+                        <X v-if="editMode" class="size-3.5" />
+                        <Pencil v-else class="size-3.5" />
+                        <span>{{ editMode ? 'Batal' : 'Edit' }}</span>
+                    </button>
+
+                    <LkpdSectionLabel :label="pages[currentPage].label" />
+
+                    <Transition name="slide" mode="out-in">
+                        <div v-if="currentPageKey === 'perkenalan'" key="perkenalan" class="text-center">
+                            <PerkenalanContent v-if="!editMode" :sampul="sampul" />
+
+                            <form v-else class="mx-auto max-w-lg space-y-3 text-left" @submit.prevent="submitEdit">
+                                <div>
+                                    <label class="text-xs font-bold text-amber-900">Judul</label>
+                                    <textarea v-model="form.judul" rows="2" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
+                                    <p v-if="form.errors.judul" class="mt-1 text-xs text-destructive">{{ form.errors.judul }}</p>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="text-xs font-bold text-amber-900">Mapel</label>
+                                        <input v-model="form.mapel" type="text" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-amber-900">Jenjang</label>
+                                        <input v-model="form.jenjang" type="text" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-amber-900">Label Kelas</label>
+                                        <input v-model="form.kelas_label" type="text" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
+                                    </div>
+                                    <div>
+                                        <label class="text-xs font-bold text-amber-900">Fase</label>
+                                        <input v-model="form.fase" type="text" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-amber-900">Kurikulum</label>
+                                    <input v-model="form.kurikulum" type="text" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-amber-900">Penulis</label>
+                                    <input v-model="form.penulis" type="text" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
+                                </div>
+                                <div>
+                                    <div class="mb-1 flex items-center justify-between">
+                                        <label class="text-xs font-bold text-amber-900">Pembimbing</label>
+                                        <button type="button" class="text-xs font-semibold text-amber-800 hover:underline" @click="addPembimbing">+ Tambah pembimbing</button>
+                                    </div>
+                                    <div v-for="(_, index) in form.pembimbing" :key="index" class="mb-2 flex gap-2">
+                                        <input v-model="form.pembimbing[index]" type="text" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" :placeholder="`Nama pembimbing ${index + 1}`" />
+                                        <button v-if="form.pembimbing.length > 1" type="button" class="mt-1 rounded-md border px-3 text-sm text-red-700 hover:bg-red-50" @click="removePembimbing(index)">Hapus</button>
+                                    </div>
+                                    <p v-if="form.errors.pembimbing" class="mt-1 text-xs text-destructive">{{ form.errors.pembimbing }}</p>
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-amber-900">Validator Ahli Media</label>
+                                    <input v-model="form.validator_media" type="text" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold text-amber-900">Validator Ahli Materi</label>
+                                    <input v-model="form.validator_materi" type="text" class="mt-1 w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
+                                </div>
+                                <div class="flex justify-end gap-2 pt-2">
+                                    <button type="button" class="rounded-md border px-4 py-2 text-sm" @click="cancelEdit">Batal</button>
+                                    <button type="submit" class="rounded-md bg-amber-800 px-4 py-2 text-sm font-medium text-white disabled:opacity-60" :disabled="form.processing">Simpan</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div v-else key="pengantar">
+                            <ParagraphContent v-if="!editMode" :paragraphs="pendahuluan.kata_pengantar" />
+                            <form v-else class="space-y-3" @submit.prevent="submitEdit">
+                                <label class="text-xs font-bold text-amber-900">Kata Pengantar (pisahkan paragraf dengan baris kosong)</label>
+                                <textarea v-model="form.kata_pengantar" rows="10" class="w-full rounded-md border border-amber-300 px-3 py-2 text-sm" />
+                                <p v-if="form.errors.kata_pengantar" class="text-xs text-destructive">{{ form.errors.kata_pengantar }}</p>
+                                <div class="flex justify-end gap-2 pt-2">
+                                    <button type="button" class="rounded-md border px-4 py-2 text-sm" @click="cancelEdit">Batal</button>
+                                    <button type="submit" class="rounded-md bg-amber-800 px-4 py-2 text-sm font-medium text-white disabled:opacity-60" :disabled="form.processing">Simpan</button>
+                                </div>
+                            </form>
+                        </div>
+                    </Transition>
+                </div>
+
+                <button
+                    type="button"
+                    aria-label="Halaman berikutnya"
+                    class="hidden size-11 shrink-0 items-center justify-center rounded-full border border-amber-200 bg-white text-amber-900 shadow-sm transition hover:bg-amber-100 sm:flex dark:border-border dark:bg-card dark:text-amber-100"
+                    @click="nextPage"
+                >
+                    <ChevronRight class="size-5" />
+                </button>
+            </div>
         </div>
     </div>
 </template>

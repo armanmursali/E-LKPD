@@ -11,8 +11,8 @@ import { email } from '@/routes/password';
 
 defineOptions({
     layout: {
-        title: 'Forgot password',
-        description: 'Enter your email to receive a password reset link',
+        title: 'Lupa Kata Sandi',
+        description: 'Masukkan email Anda untuk menerima tautan atur ulang kata sandi',
     },
 });
 
@@ -22,7 +22,7 @@ defineProps<{
 </script>
 
 <template>
-    <Head title="Forgot password" />
+    <Head title="Lupa Kata Sandi" />
 
     <div
         v-if="status"
@@ -34,33 +34,33 @@ defineProps<{
     <div class="space-y-6">
         <Form v-bind="email.form()" v-slot="{ errors, processing }">
             <div class="grid gap-2">
-                <Label for="email">Email address</Label>
+                <Label for="email">Alamat Email</Label>
                 <Input
                     id="email"
                     type="email"
                     name="email"
                     autocomplete="off"
                     autofocus
-                    placeholder="email@example.com"
+                    placeholder="nama@sekolah.sch.id"
                 />
                 <InputError :message="errors.email" />
             </div>
 
             <div class="my-6 flex items-center justify-start">
                 <Button
-                    class="w-full"
+                    class="w-full bg-amber-800 text-white hover:bg-amber-700"
                     :disabled="processing"
                     data-test="email-password-reset-link-button"
                 >
                     <Spinner v-if="processing" />
-                    Email password reset link
+                    Kirim Tautan Reset Kata Sandi
                 </Button>
             </div>
         </Form>
 
         <div class="text-muted-foreground space-x-1 text-center text-sm">
-            <span>Or, return to</span>
-            <TextLink :href="login()">log in</TextLink>
+            <span>Atau kembali ke halaman</span>
+            <TextLink :href="login()" class="font-semibold text-amber-800 dark:text-amber-300">masuk</TextLink>
         </div>
     </div>
 </template>

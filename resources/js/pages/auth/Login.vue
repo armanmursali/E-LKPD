@@ -15,8 +15,8 @@ import PasskeyVerify from '@/components/PasskeyVerify.vue';
 
 defineOptions({
     layout: {
-        title: 'Log in to your account',
-        description: 'Enter your email and password below to log in',
+        title: 'Masuk ke Akun Guru',
+        description: 'Masukkan email dan kata sandi Anda untuk melanjutkan',
     },
 });
 
@@ -44,9 +44,23 @@ defineProps<{
         v-slot="{ errors, processing }"
         class="flex flex-col gap-6"
     >
-        <div class="grid gap-6">
+        <div class="grid gap-5">
+            <a
+                href="/auth/google"
+                class="inline-flex w-full items-center justify-center gap-2.5 rounded-lg border border-amber-300 bg-amber-50/60 px-4 py-2.5 text-sm font-bold text-amber-950 transition hover:bg-amber-100 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-100"
+            >
+                <span class="flex size-5 items-center justify-center rounded bg-amber-800 text-xs font-black text-white">G</span>
+                Masuk dengan Google
+            </a>
+
+            <div class="relative flex items-center justify-center">
+                <span class="h-px flex-1 bg-amber-200 dark:bg-border" />
+                <span class="px-3 text-xs font-medium text-amber-900/60 dark:text-muted-foreground">atau dengan email</span>
+                <span class="h-px flex-1 bg-amber-200 dark:bg-border" />
+            </div>
+
             <div class="grid gap-2">
-                <Label for="email">Email address</Label>
+                <Label for="email">Alamat Email</Label>
                 <Input
                     id="email"
                     type="email"
@@ -55,21 +69,21 @@ defineProps<{
                     autofocus
                     :tabindex="1"
                     autocomplete="email"
-                    placeholder="email@example.com"
+                    placeholder="nama@sekolah.sch.id"
                 />
                 <InputError :message="errors.email" />
             </div>
 
             <div class="grid gap-2">
                 <div class="flex items-center justify-between">
-                    <Label for="password">Password</Label>
+                    <Label for="password">Kata Sandi</Label>
                     <TextLink
                         v-if="canResetPassword"
                         :href="request()"
-                        class="text-sm"
+                        class="text-sm text-amber-800 dark:text-amber-300"
                         :tabindex="5"
                     >
-                        Forgot your password?
+                        Lupa kata sandi?
                     </TextLink>
                 </div>
                 <PasswordInput
@@ -78,7 +92,7 @@ defineProps<{
                     required
                     :tabindex="2"
                     autocomplete="current-password"
-                    placeholder="Password"
+                    placeholder="Masukkan kata sandi"
                 />
                 <InputError :message="errors.password" />
             </div>
@@ -86,25 +100,25 @@ defineProps<{
             <div class="flex items-center justify-between">
                 <Label for="remember" class="flex items-center space-x-3">
                     <Checkbox id="remember" name="remember" :tabindex="3" />
-                    <span>Remember me</span>
+                    <span>Ingat saya</span>
                 </Label>
             </div>
 
             <Button
                 type="submit"
-                class="mt-4 w-full"
+                class="mt-2 w-full bg-amber-800 text-white hover:bg-amber-700"
                 :tabindex="4"
                 :disabled="processing"
                 data-test="login-button"
             >
                 <Spinner v-if="processing" />
-                Log in
+                Masuk
             </Button>
         </div>
 
         <div class="text-muted-foreground text-center text-sm">
-            Don't have an account?
-            <TextLink :href="register()" :tabindex="5">Sign up</TextLink>
+            Belum punya akun?
+            <TextLink :href="register()" :tabindex="5" class="font-semibold text-amber-800 dark:text-amber-300">Daftar sekarang</TextLink>
         </div>
     </Form>
 </template>

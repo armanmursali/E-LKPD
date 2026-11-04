@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { AlignCenter, AlignJustify, AlignLeft, AlignRight, ArrowDown, ArrowUp, CheckSquare, CircleDot, Clapperboard, Columns2, GripVertical, Image, List, Plus, Text, Trash2, Type, UserRound } from '@lucide/vue';
+import { AlignCenter, AlignJustify, AlignLeft, AlignRight, ArrowDown, ArrowLeft, ArrowUp, CheckSquare, ChevronDown, CircleDot, Clapperboard, Columns2, GripVertical, Image, List, Plus, Save, SlidersHorizontal, Text, Trash2, Type, UserRound } from '@lucide/vue';
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import DynamicHeadContent from '@/components/lkpd/DynamicHeadContent.vue';
 import ImageUploadField from '@/components/lkpd/ImageUploadField.vue';
@@ -210,6 +210,8 @@ const mediaUploadUrl = `/kelas/${props.kelas.id}/kegiatan-pembelajaran/${props.n
 const headTopTextEditorRef = ref<HTMLElement | null>(null);
 const savedHeadTopTextRange = ref<Range | null>(null);
 const showHeadStyleEditor = ref(false);
+const showHeadConfig = ref(false);
+const showPaperConfig = ref(false);
 
 const previewWrapperRef = ref<HTMLElement | null>(null);
 const pageRef = ref<HTMLElement | null>(null);
@@ -654,22 +656,43 @@ function submit() {
 <template>
     <Head :title="`Buat LKPD - ${form.judul}`" />
 
-    <div class="relative min-h-screen bg-background lg:h-screen lg:overflow-hidden">
-        <div class="flex items-center justify-between px-6 py-5">
-            <span class="text-lg font-extrabold tracking-wide text-foreground">E-LKPD WEB</span>
-            <Link :href="`/kelas/${kelas.id}/kegiatan-pembelajaran`" class="text-sm font-semibold text-foreground hover:underline">Kembali</Link>
+    <div class="relative min-h-screen bg-amber-50/60 lg:h-screen lg:overflow-hidden dark:bg-background">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-amber-200 bg-white px-4 py-3 shadow-2xs sm:px-6 dark:border-border dark:bg-card">
+            <div class="flex min-w-0 flex-1 items-center gap-3">
+                <Link :href="`/kelas/${kelas.id}/kegiatan-pembelajaran`" class="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50/70 px-3 py-1.5 text-xs font-bold text-amber-900 transition hover:bg-amber-100">
+                    <ArrowLeft class="size-3.5" />
+                    Kembali
+                </Link>
+                <div class="min-w-0 max-w-md flex-1">
+                    <input v-model="form.judul" type="text" maxlength="255" placeholder="Judul Kegiatan LKPD..." class="w-full rounded-lg border border-amber-300 bg-white px-3 py-1.5 text-sm font-bold text-amber-950 outline-none focus:border-amber-600 focus:ring-2 focus:ring-amber-500/20" />
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <label class="hidden items-center gap-2 rounded-lg border border-amber-200 bg-amber-50/60 px-3 py-1.5 text-xs font-bold text-amber-900 sm:flex">
+                    <input v-model="form.aktif" type="checkbox" class="accent-amber-800" />
+                    Aktif untuk Siswa
+                </label>
+                <button type="button" class="inline-flex items-center gap-2 rounded-lg bg-amber-800 px-4 py-2 text-xs font-bold text-white shadow-sm transition hover:bg-amber-700 disabled:opacity-60" :disabled="form.processing" @click="submit">
+                    <Save class="size-3.5" />
+                    {{ form.processing ? 'Menyimpan...' : 'Simpan LKPD' }}
+                </button>
+            </div>
         </div>
 
-        <div class="mx-auto p-5 px-6 pb-16 lg:h-[calc(100vh-76px)] lg:overflow-hidden">
-            <h1 class="mb-1 text-xl font-bold text-amber-900">Buat LKPD</h1>
-            <input v-model="form.judul" type="text" maxlength="255" class="mb-6 w-full max-w-2xl rounded-md border border-amber-300 bg-white px-3 py-2 text-sm font-medium text-amber-950" />
-            <p v-if="form.errors.judul" class="-mt-4 mb-4 text-sm text-red-600">{{ form.errors.judul }}</p>
+        <div class="mx-auto p-4 pb-16 sm:px-6 lg:h-[calc(100vh-62px)] lg:overflow-hidden">
+            <p v-if="form.errors.judul" class="mb-3 text-sm text-red-600">{{ form.errors.judul }}</p>
 
             <div class="grid gap-6 lg:h-full lg:grid-cols-2">
                 <div class="space-y-4 pb-6 lg:min-h-0 lg:overflow-y-auto lg:pr-2 lg:pb-8">
-                    <div class="space-y-3 rounded-lg border bg-white p-3 shadow-sm">
-                        <p class="text-xs font-bold tracking-wide text-amber-900 uppercase">Head Dinamis</p>
-                        <p class="text-xs text-muted-foreground">Pilih bagian dari data Identitas Mata Pelajaran yang ingin ditampilkan di bagian atas LKPD.</p>
+                    <div class="rounded-xl border border-amber-200 bg-white p-3.5 shadow-xs">
+                        <button type="button" class="flex w-full items-center justify-between text-left" @click="showHeadConfig = !showHeadConfig">
+                            <div>
+                                <p class="text-xs font-bold tracking-wide text-amber-900 uppercase">Head Dinamis ({{ form.pengaturan.headSections?.length ?? 0 }} aktif)</p>
+                                <p class="text-[11px] text-muted-foreground">Tampilkan bagian Identitas Mata Pelajaran di atas LKPD</p>
+                            </div>
+                            <ChevronDown class="size-4 text-amber-800 transition-transform" :class="showHeadConfig ? 'rotate-180' : ''" />
+                        </button>
+                        <div v-if="showHeadConfig" class="mt-3 space-y-3 border-t border-amber-100 pt-3">
                         <div class="grid gap-2 sm:grid-cols-2">
                             <label v-for="section in DYNAMIC_HEAD_SECTION_OPTIONS" :key="section.id" class="flex items-center gap-2 rounded-md border border-amber-200 bg-amber-50/50 px-2 py-1.5 text-xs text-amber-900" @click="activateHeadEditSection(section.id)">
                                 <input :checked="isHeadSectionSelected(section.id)" type="checkbox" class="accent-amber-800" @change="toggleHeadSection(section.id)" />
@@ -689,6 +712,7 @@ function submit() {
                                     </label>
                                 </div>
                             </div>
+                        </div>
                         </div>
                     </div>
 
@@ -828,14 +852,18 @@ function submit() {
                         </div>
                     </div>
 
-                    <div class="space-y-3 rounded-lg border bg-white p-3 shadow-sm">
-                        <div class="flex items-center justify-between gap-3">
-                            <p class="text-xs font-bold tracking-wide text-amber-900 uppercase">Pengaturan Halaman (Kertas F4)</p>
-                            <label class="flex items-center gap-2 text-xs font-semibold text-amber-900">
-                                <input v-model="form.aktif" type="checkbox" class="accent-amber-800" />
-                                LKPD aktif untuk siswa
-                            </label>
-                        </div>
+                    <div class="rounded-xl border border-amber-200 bg-white p-3.5 shadow-xs">
+                        <button type="button" class="flex w-full items-center justify-between text-left" @click="showPaperConfig = !showPaperConfig">
+                            <div class="flex items-center gap-2">
+                                <SlidersHorizontal class="size-4 text-amber-800" />
+                                <div>
+                                    <p class="text-xs font-bold tracking-wide text-amber-900 uppercase">Pengaturan Halaman (Kertas F4 · {{ form.pengaturan.jenisPengerjaan }})</p>
+                                    <p class="text-[11px] text-muted-foreground">Atur margin kertas, spasi baris, dan tipe pengerjaan siswa</p>
+                                </div>
+                            </div>
+                            <ChevronDown class="size-4 text-amber-800 transition-transform" :class="showPaperConfig ? 'rotate-180' : ''" />
+                        </button>
+                        <div v-if="showPaperConfig" class="mt-3 space-y-3 border-t border-amber-100 pt-3">
                         <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
                             <label class="text-xs text-muted-foreground">
                                 Margin Atas (mm)
@@ -870,18 +898,37 @@ function submit() {
                                 <option value="kelompok">Kelompok</option>
                             </select>
                         </label>
+                        </div>
                     </div>
 
-                    <div class="flex flex-wrap gap-2 rounded-lg border bg-white p-3 shadow-sm">
+                    <div class="rounded-xl border border-amber-200 bg-white p-3.5 shadow-xs">
+                        <p class="mb-2.5 text-xs font-bold tracking-wide text-amber-900 uppercase">Tambah Blok Konten & Soal</p>
+                        <div class="flex flex-wrap gap-1.5">
+                            <button
+                                v-for="opt in blockTypeOptions"
+                                :key="opt.value"
+                                type="button"
+                                class="inline-flex items-center gap-1.5 rounded-lg border border-amber-200 bg-amber-50/60 px-2.5 py-1.5 text-xs font-semibold text-amber-950 transition hover:border-amber-400 hover:bg-amber-100"
+                                @click="addBlock(opt.value)"
+                            >
+                                <component :is="opt.icon" class="size-3.5 text-amber-800" />
+                                <span>+ {{ BLOCK_TYPE_LABELS[opt.value] }}</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div v-if="!isEmpty" class="flex items-center gap-1.5 overflow-x-auto rounded-xl border border-amber-200 bg-white p-2 shadow-2xs">
+                        <span class="shrink-0 px-2 text-[11px] font-bold uppercase tracking-wider text-amber-900/60">Blok:</span>
                         <button
-                            v-for="opt in blockTypeOptions"
-                            :key="opt.value"
+                            v-for="(blk, bIdx) in form.blocks"
+                            :key="bIdx"
                             type="button"
-                            class="inline-flex items-center gap-1.5 rounded-md border border-amber-300 px-2.5 py-1.5 text-xs font-medium text-amber-900 hover:bg-amber-50"
-                            @click="addBlock(opt.value)"
+                            class="inline-flex shrink-0 items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-bold transition"
+                            :class="activeBlockIndex === bIdx ? 'bg-amber-800 text-white shadow-xs' : 'bg-amber-50 text-amber-900 hover:bg-amber-100'"
+                            @click="selectBlock(bIdx)"
                         >
-                            <Plus class="size-3.5" />
-                            {{ BLOCK_TYPE_LABELS[opt.value] }}
+                            <span>#{{ bIdx + 1 }}</span>
+                            <span class="max-w-[90px] truncate font-medium">{{ BLOCK_TYPE_LABELS[blk.type] }}</span>
                         </button>
                     </div>
 

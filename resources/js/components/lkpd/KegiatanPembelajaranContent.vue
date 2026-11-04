@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, router } from '@inertiajs/vue3';
-import { Microscope, Trash2, Video } from '@lucide/vue';
+import { ClipboardList, Eye, EyeOff, FileEdit, Microscope, Play, Trash2, Video } from '@lucide/vue';
 import type { Component } from 'vue';
 
 export type KegiatanItem = {
@@ -35,49 +35,91 @@ function toggleAktif(kelasId: number, item: KegiatanItem) {
 </script>
 
 <template>
-    <div class="grid gap-4 sm:grid-cols-2">
-        <div v-for="item in items" :key="item.id" class="relative flex flex-col items-center gap-4 rounded-lg border border-amber-800 bg-white p-5 text-center">
-            <button
-                v-if="!publicMode"
-                type="button"
-                aria-label="Hapus kegiatan"
-                class="absolute top-2 right-2 flex size-7 items-center justify-center rounded-full text-red-600 hover:bg-red-50"
-                @click="hapus(kelasId, item)"
-            >
-                <Trash2 class="size-4" />
-            </button>
-            <span class="text-base font-bold text-amber-900">{{ item.judul }}</span>
-            <span v-if="!publicMode" class="rounded-full px-2 py-0.5 text-[11px] font-semibold" :class="item.aktif !== false ? 'bg-emerald-100 text-emerald-700' : 'bg-neutral-100 text-neutral-600'">
-                {{ item.aktif !== false ? 'Aktif' : 'Nonaktif' }}
-            </span>
-            <span class="flex size-28 items-center justify-center rounded-md bg-amber-50">
-                <component :is="iconMap[item.icon] ?? Video" class="size-16 text-amber-800" />
-            </span>
-            <div class="flex w-full flex-col gap-2">
+    <div class="grid gap-5 sm:grid-cols-2">
+        <div
+            v-for="(item, idx) in items"
+            :key="item.id"
+            class="group relative flex flex-col justify-between rounded-2xl border border-amber-200 bg-gradient-to-b from-white to-amber-50/40 p-5 text-center shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-amber-400 hover:shadow-md dark:border-border dark:from-card dark:to-card"
+        >
+            <div v-if="!publicMode" class="mb-3 flex items-center justify-between">
                 <button
-                    v-if="!publicMode"
                     type="button"
-                    class="rounded-md border px-4 py-2 text-sm font-medium hover:bg-amber-50"
-                    :class="item.aktif !== false ? 'border-red-300 text-red-700' : 'border-emerald-300 text-emerald-700'"
+                    class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold transition"
+                    :class="
+                        item.aktif !== false
+                            ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
+                            : 'bg-stone-200 text-stone-700 hover:bg-stone-300'
+                    "
+                    :title="item.aktif !== false ? 'Klik untuk menonaktifkan LKPD' : 'Klik untuk mengaktifkan LKPD'"
                     @click="toggleAktif(kelasId, item)"
                 >
-                    {{ item.aktif !== false ? 'Nonaktifkan LKPD' : 'Aktifkan LKPD' }}
+                    <Eye v-if="item.aktif !== false" class="size-3.5" />
+                    <EyeOff v-else class="size-3.5" />
+                    {{ item.aktif !== false ? 'Aktif untuk Siswa' : 'Nonaktif' }}
                 </button>
-                <Link v-if="publicMode && publicToken" :href="`/kelas-publik/${publicToken}/kegiatan-pembelajaran/${item.id}`" class="rounded-md bg-amber-800 px-4 py-2 text-sm font-medium text-white hover:bg-amber-900">Ayo Belajar</Link>
-                <Link
-                    v-if="!publicMode"
-                    :href="`/kelas/${kelasId}/kegiatan-pembelajaran/${item.id}/builder`"
-                    class="rounded-md border border-amber-800 px-4 py-2 text-sm font-medium text-amber-900 hover:bg-amber-50"
+                <button
+                    type="button"
+                    aria-label="Hapus kegiatan"
+                    title="Hapus kegiatan"
+                    class="flex size-8 items-center justify-center rounded-lg border border-red-200 text-red-600 transition hover:bg-red-50"
+                    @click="hapus(kelasId, item)"
                 >
-                    Edit Isi LKPD
-                </Link>
+                    <Trash2 class="size-4" />
+                </button>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <span class="mx-auto flex size-24 items-center justify-center rounded-2xl border border-amber-200/80 bg-amber-100/70 text-amber-800 shadow-inner transition group-hover:scale-105">
+                    <component :is="iconMap[item.icon] ?? Video" class="size-12" />
+                </span>
+                <span class="mt-3 text-[11px] font-extrabold tracking-widest text-amber-700 uppercase">
+                    Kegiatan 0{{ item.nomor ?? idx + 1 }}
+                </span>
+                <h3 class="mt-1 text-lg font-bold text-amber-950 dark:text-amber-50">{{ item.judul }}</h3>
+                <p v-if="item.bahan_ajar_label" class="mt-0.5 text-xs text-amber-900/65 dark:text-muted-foreground">
+                    {{ item.bahan_ajar_label }}
+                </p>
+            </div>
+
+            <div class="mt-5 flex w-full flex-col gap-2 border-t border-amber-100 pt-4 dark:border-border">
                 <Link
-                    v-if="!publicMode"
-                    :href="`/kelas/${kelasId}/kegiatan-pembelajaran/${item.id}/jawaban`"
-                    class="rounded-md border border-amber-800 px-4 py-2 text-sm font-medium text-amber-900 hover:bg-amber-50"
+                    v-if="publicMode && publicToken"
+                    :href="`/kelas-publik/${publicToken}/kegiatan-pembelajaran/${item.id}`"
+                    class="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-800 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-amber-700"
                 >
-                    Lihat Jawaban Siswa
+                    <Play class="size-4" />
+                    Ayo Belajar
                 </Link>
+                <template v-if="!publicMode">
+                    <Link
+                        :href="`/kelas/${kelasId}/kegiatan-pembelajaran/${item.id}/builder`"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-800 px-4 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-amber-700"
+                    >
+                        <FileEdit class="size-4" />
+                        Edit Isi LKPD (Builder)
+                    </Link>
+                    <div class="grid grid-cols-2 gap-2">
+                        <Link
+                            :href="`/kelas/${kelasId}/kegiatan-pembelajaran/${item.id}/jawaban`"
+                            class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-amber-300 bg-white px-3 py-2 text-xs font-bold text-amber-900 transition hover:bg-amber-50 dark:bg-secondary dark:text-amber-100"
+                        >
+                            <ClipboardList class="size-3.5" />
+                            Jawaban Siswa
+                        </Link>
+                        <button
+                            type="button"
+                            class="inline-flex items-center justify-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-bold transition"
+                            :class="
+                                item.aktif !== false
+                                    ? 'border-stone-300 bg-white text-stone-700 hover:bg-stone-50'
+                                    : 'border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
+                            "
+                            @click="toggleAktif(kelasId, item)"
+                        >
+                            {{ item.aktif !== false ? 'Nonaktifkan' : 'Aktifkan' }}
+                        </button>
+                    </div>
+                </template>
             </div>
         </div>
     </div>
